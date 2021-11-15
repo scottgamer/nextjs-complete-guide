@@ -1,9 +1,12 @@
 import React from "react";
 import { Event } from "../../interfaces/events";
-import Link from "next/link";
 import Image from "next/image";
 
 import styles from "./EventItem.module.css";
+import Button from "../UI/Button";
+import DateIcon from "../icons/date-icon";
+import AddressIcon from "../icons/address-icon";
+import ArrowRightIcon from "../icons/arrow-right-icon";
 
 const EventItem = ({ event }: { event: Event }): JSX.Element => {
   const { title, image, date, location, id } = event;
@@ -24,15 +27,22 @@ const EventItem = ({ event }: { event: Event }): JSX.Element => {
         <div className={styles.summary}>
           <h2>{title}</h2>
           <div className={styles.date}>
+            <DateIcon />
             <time>{readableDate}</time>
           </div>
           <div className={styles.address}>
+            <AddressIcon />
             <address>{formattedAddress}</address>
           </div>
         </div>
 
         <div className={styles.actions}>
-          <Link href={exploreLink}>Explore Event</Link>
+          <Button link={exploreLink}>
+            <span>Explore more</span>
+            <span className={styles.icon}>
+              <ArrowRightIcon />
+            </span>
+          </Button>
         </div>
       </div>
     </li>
