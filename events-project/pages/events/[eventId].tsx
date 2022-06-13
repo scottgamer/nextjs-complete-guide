@@ -1,8 +1,8 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import EventContent from "../../components/EventDetail/eventContent";
-import EventLogistics from "../../components/EventDetail/eventLogistics";
-import EventSummary from "../../components/EventDetail/eventSummary";
+import EventContent from "../../components/EventDetail/EventContent";
+import EventLogistics from "../../components/EventDetail/EventLogistics";
+import EventSummary from "../../components/EventDetail/EventSummary";
 import { getEventById } from "../../data/dummy-data";
 
 const EventDetail: NextPage = () => {
