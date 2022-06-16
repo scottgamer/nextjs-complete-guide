@@ -1,5 +1,9 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import EventList from "../../components/Events/EventList";
+import ResultsTitle from "../../components/Events/ResultsTitle";
+import Button from "../../components/UI/Button";
+import ErrorAlert from "../../components/UI/ErrorAlert";
 import { getFilteredEvents } from "../../data/dummy-data";
 
 const FilteredEvents: NextPage = () => {
@@ -26,19 +30,40 @@ const FilteredEvents: NextPage = () => {
     month < 1 ||
     month > 12
   ) {
-    return <p>Invalid filter. Please adjust your values</p>;
+    return (
+      <>
+        <ErrorAlert>
+          <p>Invalid filter. Please adjust your values</p>
+        </ErrorAlert>
+        <div className="center">
+          <Button link="/events">Show all events</Button>
+        </div>
+      </>
+    );
   }
 
   const filteredEvents = getFilteredEvents({ year, month });
 
   if (!filteredEvents || filteredEvents.length === 0) {
-    return <p>No events found for the chosen filter</p>;
+    return (
+      <>
+        <ErrorAlert>
+          <p>No events found for the chosen filter</p>
+        </ErrorAlert>
+        <div className="center">
+          <Button link="/events">Show all events</Button>
+        </div>
+      </>
+    );
   }
 
+  const date = new Date(year, month - 1);
+
   return (
-    <div>
-      <h1>Filtered Events Page</h1>
-    </div>
+    <>
+      <ResultsTitle date={date.toISOString()} />
+      <EventList events={filteredEvents} />
+    </>
   );
 };
 

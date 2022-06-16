@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import EventContent from "../../components/EventDetail/EventContent";
 import EventLogistics from "../../components/EventDetail/EventLogistics";
 import EventSummary from "../../components/EventDetail/EventSummary";
+import ErrorAlert from "../../components/UI/ErrorAlert";
 import { getEventById } from "../../data/dummy-data";
 
 const EventDetail: NextPage = () => {
@@ -12,7 +13,11 @@ const EventDetail: NextPage = () => {
   const event = getEventById(eventId);
 
   if (!event) {
-    return <p>No event found!</p>;
+    return (
+      <ErrorAlert>
+        <p>No event found!</p>
+      </ErrorAlert>
+    );
   }
 
   return (
