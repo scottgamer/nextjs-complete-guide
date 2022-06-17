@@ -65,8 +65,31 @@ Read more [here](https://nextjs.org/docs/routing/introduction)
 - only `pages` con use the `getStaticProps` function
 
 ```javascript
-export async function getStaticProps(context) {}
+export async function getStaticProps(context) {
+  // server-side like logic
+}
 ```
 
 - this function allows to write server-side code inside this function
 - will not be included in the code bundle (never seen by clients)
+
+### Incremental Static Generation
+
+- keeps updating the page for every incoming request, at most every x seconds
+- serve "old" page if re-generation is not needed yet
+- generate, store and serve "new" page otherwise
+- it's possible to set a time for refreshing the data:
+
+```typescript
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {
+      ...
+    },
+    // refresh data every 10 seconds
+    revalidate: 10,
+  };
+};
+```
+
+- **Note:** in dev mode, the page refreshes on every request, no matter the time set; only in prod mode, it'll update depending also on the time specified
