@@ -1,4 +1,6 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
+import fs from "fs/promises";
+import path from "path";
 
 interface HomeProps {
   products: { id: string; title: string }[];
@@ -18,13 +20,19 @@ const Home: NextPage<HomeProps> = ({ products }) => {
   );
 };
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
+  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData.toString());
+
   // prepares props for the component to use
   return {
     props: {
-      products: [{ id: "p1", title: "product 1" }],
+      products: data.products,
     },
+    // refresh data every 10 seconds
+    revalidate: 10,
   };
-}
+};
 
 export default Home;
