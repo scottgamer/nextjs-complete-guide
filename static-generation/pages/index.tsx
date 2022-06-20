@@ -4,7 +4,13 @@ import path from "path";
 import Link from "next/link";
 
 interface HomeProps {
-  products: { id: string; title: string }[];
+  products: Product[];
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
 }
 
 const Home: NextPage<HomeProps> = ({ products }) => {
@@ -23,7 +29,6 @@ const Home: NextPage<HomeProps> = ({ products }) => {
   );
 };
 
-// TODO: fix type error
 export const getStaticProps: GetStaticProps = async (context) => {
   const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
   const jsonData = await fs.readFile(filePath);
@@ -31,6 +36,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (!data) {
     return {
+      props: {},
       redirect: { destination: "/no-data" },
     };
   }

@@ -1,8 +1,17 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import path from "path";
 import fs from "fs/promises";
+import { Product } from ".";
 
-const ProductDetailsPage: NextPage = ({ loadedProduct }) => {
+type LoadedProduct = Product;
+
+interface ProductDetailsPageProps {
+  loadedProduct: LoadedProduct;
+}
+
+const ProductDetailsPage: NextPage<ProductDetailsPageProps> = ({
+  loadedProduct,
+}) => {
   if (!loadedProduct) {
     return <p>loading...</p>;
   }
@@ -25,9 +34,11 @@ const getData = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { params } = context;
-  const productId = params.product_id;
+  const productId = params!.product_id;
   const data = await getData();
-  const product = data.products.find((product) => product.id === productId);
+  const product = data.products.find(
+    (product: Product) => product.id === productId
+  );
 
   if (!product) {
     return { notFound: true };
@@ -42,8 +53,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await getData();
-  const ids = data.products.map((product) => product.id);
-  const pathsWithParams = ids.map((id) => ({
+  const ids = data.products.map((product: Product) => product.id);
+  const pathsWithParams = ids.map((id: string) => ({
     params: { product_id: id },
   }));
 
