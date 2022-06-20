@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -8,10 +8,14 @@ interface TransformedSale {
   volume: any;
 }
 
+interface LastSalesPageProps {
+  sales: TransformedSale[];
+}
+
 type TransformedSales = TransformedSale[];
 
-const LastSalesPage: NextPage = () => {
-  const [sales, setSales] = useState<TransformedSales>();
+const LastSalesPage: NextPage<LastSalesPageProps> = (props) => {
+  const [sales, setSales] = useState<TransformedSales>(props.sales);
   // const [isLoading, setLoading] = useState<boolean>(false);
 
   // use default fetch api
@@ -69,7 +73,7 @@ const LastSalesPage: NextPage = () => {
     return <p>Failed to load</p>;
   }
 
-  if (!data || !sales) {
+  if (!data && !sales) {
     return <p>Loading...</p>;
   }
 
@@ -85,3 +89,26 @@ const LastSalesPage: NextPage = () => {
 };
 
 export default LastSalesPage;
+
+// will work as initial state for SSG
+export const getStaticProps: GetStaticProps = async () => {
+  const data = await fetch(
+    "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json"
+  );
+  const sales = await data.json();
+
+  const transformedSales: TransformedSales = [];
+
+  for (const key in sales) {
+    transformedSales.push({
+      id: key,
+      username: sales[key].username,
+      volume: sales[key].volume,
+    });
+  }
+
+  return {
+    props: { sales: transformedSales },
+    revalidate: 10,
+  };
+};
