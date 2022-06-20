@@ -93,3 +93,56 @@ export const getStaticProps: GetStaticProps = async () => {
 ```
 
 - **Note:** in dev mode, the page refreshes on every request, no matter the time set; only in prod mode, it'll update depending also on the time specified
+
+- `getStaticProps` also has the `notFound` boolean property to display the `404 Page` in case we want to programatically do so
+
+```typescript
+export const getStaticProps: GetStaticProps = async () => {
+  if (data.products.length === 0) {
+    return {
+      notFound: true,
+    };
+  }
+};
+```
+
+### Pre-generated Paths (Routes)
+
+- dynamic pages ([id].js) don't just need data:
+  - you also need to know which [id] values will be available
+- multiple concrete [id] page instances (e.g id=1, id=2, etc) are pre-generated
+- use `export async function getStaticPaths() {...}` for this
+- it's important to specify the list of items to be pre-generated in advance:
+
+```typescript
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          product_id: "p1",
+        },
+      },
+      {
+        params: {
+          product_id: "p2",
+        },
+      },
+      {
+        params: {
+          product_id: "p3",
+        },
+      },
+    ],
+    fallback: false,
+  };
+};
+```
+
+- this also allows for pre-fetching data
+- the `fallback` property works as a JIT page load, is not pre-generated but Next.js knows what pages to load JIT
+- it's necessary to set the `fallback` property to `true`
+- the dynamic pre-generation also requires a `fallback` state in the component since it takes a bit of time to load data
+- the `fallback` property can also have the `blocking` value to wait for the page to be readily available, similar to a `loading` state
+
+Read more about `getStaticPaths` [here](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths)
