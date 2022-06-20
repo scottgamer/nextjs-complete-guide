@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface TransformedSale {
   id: string;
@@ -11,43 +12,65 @@ type TransformedSales = TransformedSale[];
 
 const LastSalesPage: NextPage = () => {
   const [sales, setSales] = useState<TransformedSales>();
-  const [isLoading, setLoading] = useState<boolean>(false);
+  // const [isLoading, setLoading] = useState<boolean>(false);
+
+  // use default fetch api
+  const { data, error } = useSWR(
+    "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json",
+    (url) => fetch(url).then((res) => res.json())
+  );
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetch(
-          "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json"
-        );
-        const sales = await data.json();
-        const transformedSales: TransformedSales = [];
+    if (data) {
+      const transformedSales: TransformedSales = [];
 
-        for (const key in sales) {
-          transformedSales.push({
-            id: key,
-            username: sales[key].username,
-            volume: sales[key].volume,
-          });
-        }
-
-        setSales(transformedSales);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+      for (const key in data) {
+        transformedSales.push({
+          id: key,
+          username: data[key].username,
+          volume: data[key].volume,
+        });
       }
-    };
 
-    getData();
-  }, []);
+      setSales(transformedSales);
+    }
+  }, [data]);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const data = await fetch(
+  //         "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json"
+  //       );
+  //       const sales = await data.json();
+  //       const transformedSales: TransformedSales = [];
+
+  //       for (const key in sales) {
+  //         transformedSales.push({
+  //           id: key,
+  //           username: sales[key].username,
+  //           volume: sales[key].volume,
+  //         });
+  //       }
+
+  //       setSales(transformedSales);
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   getData();
+  // }, []);
+
+  if (error) {
+    return <p>Failed to load</p>;
   }
 
-  if (!sales) {
-    return <p>No data fetched</p>;
+  if (!data || !sales) {
+    return <p>Loading...</p>;
   }
 
   return (
