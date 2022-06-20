@@ -175,3 +175,39 @@ export async function getServerSideProps() {...}
 - pre-fetching the data for page generation might not work or be required
 - make use of the traditional client-side data fetching (useEffect with fetch)
 
+### Combine client-side data fetching with pre-rendering
+
+- leads to better UX
+- the pre-generated data can serve as an initial state for the page
+- you can make use of the "traditional" `useEffect/useState` hooks for setting data, or you can also use `useSWR`hook for fetching and revalidating data
+
+```typescript
+// client-side data fetching
+const { data, error } = useSWR(
+  "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json",
+  (url) => fetch(url).then((res) => res.json())
+);
+
+// for initial state via props
+export const getStaticProps: GetStaticProps = async () => {
+  const data = await fetch(
+    "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/sales.json"
+  );
+  const sales = await data.json();
+
+  const transformedSales: TransformedSales = [];
+
+  for (const key in sales) {
+    transformedSales.push({
+      id: key,
+      username: sales[key].username,
+      volume: sales[key].volume,
+    });
+  }
+
+  return {
+    props: { sales: transformedSales },
+    revalidate: 10,
+  };
+};
+```
