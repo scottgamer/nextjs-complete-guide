@@ -146,3 +146,32 @@ export const getStaticPaths: GetStaticPaths = async () => {
 - the `fallback` property can also have the `blocking` value to wait for the page to be readily available, similar to a `loading` state
 
 Read more about `getStaticPaths` [here](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths)
+
+**Note:** Dynamically pre-generated pages (which change depending on the `id` of an element), require to have both the `getStaticProps` and `getStaticPaths` to work together
+
+### Server-side Rendering
+
+- sometimes, you need to pre-render for every request or you need access to the request object
+- Next.js allows to run "real server-side code" as well
+- use `getServerSideProps` to achieve this
+
+```typescript
+export async function getServerSideProps() {...}
+```
+
+**Note:** you can only make use of either `getStaticProps` and `getServerSideProps` since they accomplish the same objective and clash in logic
+
+- `getServerSideProps` will always run again for every request
+
+- `getServerSideProps` is not affected by the pre-generation of pages since this code always runs on the server
+
+## Client-side Data Fetching
+
+- data that doesn't need to be pre-rendered
+- data that changes a lot during time
+  - data changing with high frequency (stock data)
+  - highly user-specific data (last orders in shop)
+  - partial data (only used on a part of a page)
+- pre-fetching the data for page generation might not work or be required
+- make use of the traditional client-side data fetching (useEffect with fetch)
+
