@@ -5,14 +5,12 @@ export const getAllEvents = async () => {
     "https://nextjs-course-c9cb8-default-rtdb.firebaseio.com/events.json"
   );
   const data = await response.json();
-  const events: Event[] = [];
-
-  for (const key in data) {
-    events.push({
-      id: key,
-      ...data[key],
-    });
-  }
+  const events = Object.entries(data).reduce(
+    (acc, [currentKey, currentVal]) => {
+      return [...acc, { ...(currentVal as Event), id: currentKey }];
+    },
+    [] as Event[]
+  );
 
   return events;
 };
