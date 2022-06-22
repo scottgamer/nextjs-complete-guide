@@ -27,5 +27,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       events: featuredEvents,
     },
+    revalidate: 1800, // regenerate page content every 30 minutes
   };
 };

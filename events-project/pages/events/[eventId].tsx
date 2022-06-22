@@ -3,7 +3,7 @@ import EventContent from "../../components/EventDetail/EventContent";
 import EventLogistics from "../../components/EventDetail/EventLogistics";
 import EventSummary from "../../components/EventDetail/EventSummary";
 import ErrorAlert from "../../components/UI/ErrorAlert";
-import { getEventById, getAllEvents } from "../../helpers/apiUtils";
+import { getEventById, getFeaturedEvents } from "../../helpers/apiUtils";
 import { Event } from "../../interfaces/events";
 
 interface EventDetailProps {
@@ -48,11 +48,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       event,
     },
+    revalidate: 30,
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await getAllEvents();
+  const events = await getFeaturedEvents();
   const paths = events.map((event) => ({ params: { eventId: event.id } }));
-  return { paths, fallback: false };
+
+  // set fallback true, since there are more pages than the ones pre-generated
+  return { paths, fallback: true };
 };
