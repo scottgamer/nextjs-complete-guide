@@ -1,4 +1,5 @@
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import EventList from "../../components/Events/EventList";
 import ResultsTitle from "../../components/Events/ResultsTitle";
 import Button from "../../components/UI/Button";
@@ -66,6 +67,13 @@ const FilteredEvents: NextPage<FilteredEventsProps> = ({
 
   return (
     <>
+      <Head>
+        <meta
+          name="description"
+          content={`All events for ${date.year} / ${date.month}`}
+        />
+        <title>Filtered events</title>
+      </Head>
       <ResultsTitle date={parsedDate.toISOString()} />
       <EventList events={filteredEvents} />
     </>

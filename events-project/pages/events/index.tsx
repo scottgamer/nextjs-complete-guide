@@ -1,4 +1,5 @@
 import { GetStaticProps, NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import EventList from "../../components/Events/EventList";
 import EventsSearch from "../../components/Events/EventsSearch";
@@ -23,6 +24,10 @@ const Events: NextPage<EventsProps> = ({ events }) => {
 
   return (
     <>
+      <Head>
+        <meta name="description" content="Take a look at all new events" />
+        <title>NextJS Events</title>
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList events={events} />
     </>
