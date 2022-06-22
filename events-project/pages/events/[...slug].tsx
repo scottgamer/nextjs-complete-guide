@@ -1,5 +1,4 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useRouter } from "next/router";
 import EventList from "../../components/Events/EventList";
 import ResultsTitle from "../../components/Events/ResultsTitle";
 import Button from "../../components/UI/Button";
