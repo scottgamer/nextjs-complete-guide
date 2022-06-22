@@ -1,17 +1,16 @@
-import { NextPage } from "next";
-import { useRouter } from "next/router";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import EventContent from "../../components/EventDetail/EventContent";
 import EventLogistics from "../../components/EventDetail/EventLogistics";
 import EventSummary from "../../components/EventDetail/EventSummary";
 import ErrorAlert from "../../components/UI/ErrorAlert";
-import { getEventById } from "../../data/dummy-data";
+import { getEventById, getAllEvents } from "../../helpers/apiUtils";
+import { Event } from "../../interfaces/events";
 
-const EventDetail: NextPage = () => {
-  const router = useRouter();
+interface EventDetailProps {
+  event: Event;
+}
 
-  const eventId: string | string[] | undefined = router.query.eventId;
-  const event = getEventById(eventId);
-
+const EventDetail: NextPage<EventDetailProps> = ({ event }) => {
   if (!event) {
     return (
       <ErrorAlert>
@@ -32,3 +31,28 @@ const EventDetail: NextPage = () => {
 };
 
 export default EventDetail;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { params } = context;
+  const eventId = params!.eventId;
+
+  if (!eventId) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const event = await getEventById(eventId);
+
+  return {
+    props: {
+      event,
+    },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const events = await getAllEvents();
+  const paths = events.map((event) => ({ params: { eventId: event.id } }));
+  return { paths, fallback: false };
+};
