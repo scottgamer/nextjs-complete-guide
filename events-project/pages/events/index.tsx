@@ -1,11 +1,16 @@
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import EventList from "../../components/Events/EventList";
 import EventsSearch from "../../components/Events/EventsSearch";
-import { getAllEvents } from "../../data/dummy-data";
+import { getAllEvents } from "../../helpers/apiUtils";
+import { Event } from "../../interfaces/events";
 
-const Events: NextPage = () => {
-  const events = getAllEvents();
+interface EventsProps {
+  events: Event[];
+}
+
+const Events: NextPage<EventsProps> = ({ events }) => {
+  // const events = getAllEvents();
   const router = useRouter();
 
   const findEventsHandler = (
@@ -17,11 +22,22 @@ const Events: NextPage = () => {
   };
 
   return (
-    <div>
+    <>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList events={events} />
-    </div>
+    </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const events = await getAllEvents();
+
+  return {
+    props: {
+      events,
+    },
+    revalidate: 60,
+  };
 };
 
 export default Events;
