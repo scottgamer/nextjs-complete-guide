@@ -211,3 +211,51 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 ```
+
+## Page Optimizations
+
+- Next.js allows to add `meta` info using the `meta` tag and the `Head` component
+
+```typescript
+const component: NextPage = () => {
+  return (
+    <Head>
+      <meta name="description" content="Take a look at all new events" />
+      <title>NextJS Events</title>
+    </Head>
+  );
+};
+```
+
+- Next.js allows to have multiple `Head` components, and also merges them
+- in case of redundant tags, Next.js shows the latest
+- it's possible to add a general `Head` component in the `_app.tsx` component, and specific `Head` components per page
+
+### \_app.tsx vs document.ts
+
+- `_app.tsx` is the app shell, root component inside of the `body` section
+- `document.tsx` allows to customize the entire html document
+- when you need to override the `default` HTML DOM, you can achieve so by creating a custom `Document` element in the `document.tsx` file
+
+```typescript
+import Document, { Html, Head, Main, NextScript } from "next/document";
+
+class MyDocument extends Document {
+  // default html structure for overriding
+  render() {
+    return (
+      <Html lang="en">
+        <Head />
+        <body>
+          {/* allows to have external react elements aside from the root */}
+          <div id="overlays"></div>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default MyDocument;
+```
