@@ -22,7 +22,7 @@ const EventItem = ({ event }: { event: Event }): JSX.Element => {
 
   return (
     <li className={styles.item}>
-      <Image src={"/" + image} alt={title} width="500" height="500" />
+      <Image src={"/" + image} alt={title} width={340} height={160} />
       <div className={styles.content}>
         <div className={styles.summary}>
           <h2>{title}</h2>

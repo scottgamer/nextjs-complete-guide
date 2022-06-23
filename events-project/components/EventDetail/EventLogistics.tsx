@@ -1,8 +1,9 @@
 import AddressIcon from "../icons/address-icon";
 import DateIcon from "../icons/date-icon";
-import LogisticsItem from "./logisticsItem";
+import LogisticsItem from "./LogisticsItem";
 import type { Event } from "../../interfaces/events";
 import classes from "./EventLogistics.module.css";
+import Image from "next/image";
 
 function EventLogistics({ event }: { event: Event }) {
   const { date, location, image, title } = event;
@@ -17,7 +18,7 @@ function EventLogistics({ event }: { event: Event }) {
   return (
     <section className={classes.logistics}>
       <div className={classes.image}>
-        <img src={`/${image}`} alt={title} />
+        <Image src={`/${image}`} alt={title} width={480} height={480} />
       </div>
       <ul className={classes.list}>
         <LogisticsItem Icon={DateIcon}>
