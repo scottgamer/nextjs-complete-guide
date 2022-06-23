@@ -259,3 +259,9 @@ class MyDocument extends Document {
 
 export default MyDocument;
 ```
+
+## API Routes
+
+- URL's that don't return pages, but instead provide a REST API
+- they work in a similar fashion to `Express.`
+- requests are typically not sent by entering a URL, but instead via Javascript code (AJAX)
