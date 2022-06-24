@@ -5,9 +5,12 @@ import NewComment from "./NewComment";
 import classes from "./comments.module.css";
 import { NextPage } from "next";
 
+interface CommentsProps {
+  eventId: string;
+}
 
 // FIX: add props
-const Comments: NextPage = ({ eventId }) => {
+const Comments: NextPage<CommentsProps> = ({ eventId }) => {
   const [showComments, setShowComments] = useState(false);
 
   function toggleCommentsHandler() {
