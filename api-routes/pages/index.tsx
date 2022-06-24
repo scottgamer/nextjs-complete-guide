@@ -1,10 +1,18 @@
 import type { NextPage } from "next";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
+
+interface FeedbackItem {
+  id: string;
+  email: string;
+  text: string;
+}
 
 const Home: NextPage = () => {
   const emailInput = useRef<HTMLInputElement>(null);
   const feedbackInput = useRef<HTMLTextAreaElement>(null);
+
+  const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
 
   const submitForm = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -28,6 +36,12 @@ const Home: NextPage = () => {
     console.log(data);
   };
 
+  const loadFeedback = async () => {
+    const response = await fetch("/api/feedback");
+    const data = await response.json();
+    setFeedbackItems(data.feedback);
+  };
+
   return (
     <div className={styles.container}>
       <h1>The Home Page</h1>
@@ -43,6 +57,13 @@ const Home: NextPage = () => {
         </div>
         <button onClick={submitForm}>Submit feedback</button>
       </form>
+      <hr />
+      <button onClick={loadFeedback}>Load feedback</button>
+      <ul>
+        {feedbackItems.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
     </div>
   );
 };
