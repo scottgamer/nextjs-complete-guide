@@ -265,3 +265,50 @@ export default MyDocument;
 - URL's that don't return pages, but instead provide a REST API
 - they work in a similar fashion to `Express.`
 - requests are typically not sent by entering a URL, but instead via Javascript code (AJAX)
+- you can add API routes in the `pages/api/` folder
+- every file added to the `pages/api` folder will be treated as an endpoint, i.e `pages/api/feedback` becomes `/api/feedback`, with a `GET` method by default
+
+### Client-side vs Sever-side data fetching
+
+- it's possible to fetch or post data from an API route using the fetch method
+
+```typescript
+const loadFeedback = async () => {
+  const response = await fetch("/api/feedback");
+  const data = await response.json();
+  setFeedbackItems(data.feedback);
+};
+```
+
+- however, this will only work when using client-side data fetching
+- when using server-side data fetching with `getStaticProps` or `getServerSideProps`, it's not possible to consume the API route directly
+- you need to add server-side logic to fetch the data since this code is not bundled in the client code
+
+```typescript
+export const getStaticProps: GetStaticProps = async () => {
+  // in this case, it's not recommended to use fetch to access an api route
+  // instead, it's recommended to add the server-side logic for fetching/querying data since it'll not be available in the client bundle
+
+  // TODO: same logic for getting data as in api/feedback api route
+  return {
+    props: {
+      feedbackItems: [],
+    },
+  };
+};
+```
+
+- you can access the submitted data (form, query params, ...) using the `req` object
+
+```typescript
+const handler: NextApiHandler = async (req, res) => {
+  const feedbackId = req.query.feedbackId;
+  const filePath = buildFeedbackPath();
+  const feedbackData = await extractFeedback(filePath);
+  const selectedFeedback = feedbackData.find(
+    (feedback) => feedback.id === feedbackId
+  );
+
+  res.status(200).json({ feedback: selectedFeedback });
+};
+```
