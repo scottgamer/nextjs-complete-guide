@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRef, useState } from "react";
-import classes from "./new-comment.module.css";
+import classes from "./NewComment.module.css";
 
 // FIX: add props
 // FIX: add typing notations
