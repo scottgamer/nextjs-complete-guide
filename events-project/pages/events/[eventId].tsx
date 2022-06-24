@@ -3,6 +3,7 @@ import Head from "next/head";
 import EventContent from "../../components/EventDetail/EventContent";
 import EventLogistics from "../../components/EventDetail/EventLogistics";
 import EventSummary from "../../components/EventDetail/EventSummary";
+import Comments from "../../components/Input/Comments";
 import ErrorAlert from "../../components/UI/ErrorAlert";
 import { getEventById, getFeaturedEvents } from "../../helpers/apiUtils";
 import { Event } from "../../interfaces/events";
@@ -31,6 +32,7 @@ const EventDetail: NextPage<EventDetailProps> = ({ event }) => {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      <Comments eventId={event.id} />
     </>
   );
 };
