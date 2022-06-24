@@ -1,16 +1,19 @@
 import { NextApiHandler } from "next";
 import fs from "fs/promises";
 import path from "path";
+import { FeedbackItem } from "..";
 
 export function buildFeedbackPath() {
   return path.join(process.cwd(), "data", "feedback.json");
 }
 
-export async function extractFeedback(filePath: string) {
+export const extractFeedback = async (
+  filePath: string
+): Promise<FeedbackItem[]> => {
   const fileData = await fs.readFile(filePath);
   const data = JSON.parse(fileData.toString());
   return data;
-}
+};
 
 // allows to execute server-side code
 const handler: NextApiHandler = async (req, res) => {
