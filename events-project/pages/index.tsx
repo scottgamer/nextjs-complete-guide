@@ -1,6 +1,7 @@
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import EventList from "../components/Events/EventList";
+import NewsletterRegistration from "../components/Input/NewsletterRegistration";
 import { getFeaturedEvents } from "../helpers/apiUtils";
 import { Event } from "../interfaces/events";
 import styles from "../styles/Home.module.css";
@@ -17,6 +18,7 @@ const Home: NextPage<HomeProps> = ({ events }) => {
         <title>NextJS Events</title>
       </Head>
       <ul>
+        <NewsletterRegistration />
         <EventList events={events} />
       </ul>
     </div>
