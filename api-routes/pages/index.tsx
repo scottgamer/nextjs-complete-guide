@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import React, { useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
 
-interface FeedbackItem {
+export interface FeedbackItem {
   id: string;
   email: string;
   text: string;
