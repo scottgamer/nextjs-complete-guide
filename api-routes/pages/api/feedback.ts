@@ -2,11 +2,11 @@ import { NextApiHandler } from "next";
 import fs from "fs/promises";
 import path from "path";
 
-function buildFeedbackPath() {
+export function buildFeedbackPath() {
   return path.join(process.cwd(), "data", "feedback.json");
 }
 
-async function extractFeedback(filePath: string) {
+export async function extractFeedback(filePath: string) {
   const fileData = await fs.readFile(filePath);
   const data = JSON.parse(fileData.toString());
   return data;
