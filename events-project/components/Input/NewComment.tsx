@@ -1,22 +1,34 @@
 import { NextPage } from "next";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import classes from "./NewComment.module.css";
+
+interface NewCommentProps {
+  onAddComment: ({
+    email,
+    name,
+    text,
+  }: {
+    email: string;
+    name: string;
+    text: string;
+  }) => void;
+}
 
 // FIX: add props
 // FIX: add typing notations
-const NewComment: NextPage = ({ onAddComment }) => {
+const NewComment: NextPage<NewCommentProps> = ({ onAddComment }) => {
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const emailInputRef = useRef();
-  const nameInputRef = useRef();
-  const commentInputRef = useRef();
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
-  function sendCommentHandler(event) {
+  function sendCommentHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const enteredEmail = emailInputRef.current.value;
-    const enteredName = nameInputRef.current.value;
-    const enteredComment = commentInputRef.current.value;
+    const enteredEmail = emailInputRef.current?.value;
+    const enteredName = nameInputRef.current?.value;
+    const enteredComment = commentInputRef.current?.value;
 
     if (
       !enteredEmail ||
@@ -39,7 +51,7 @@ const NewComment: NextPage = ({ onAddComment }) => {
   }
 
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={sendCommentHandler}>
       <div className={classes.row}>
         <div className={classes.control}>
           <label htmlFor="email">Your email</label>
@@ -52,10 +64,10 @@ const NewComment: NextPage = ({ onAddComment }) => {
       </div>
       <div className={classes.control}>
         <label htmlFor="comment">Your comment</label>
-        <textarea id="comment" rows="5" ref={commentInputRef}></textarea>
+        <textarea id="comment" rows={5} ref={commentInputRef}></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
-      <button>Submit</button>
+      <button style={{ backgroundColor: "white" }}>Submit</button>
     </form>
   );
 };
