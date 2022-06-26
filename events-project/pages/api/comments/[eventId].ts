@@ -1,12 +1,11 @@
 import { NextApiHandler } from "next";
 import { MongoClient } from "mongodb";
+import { MONGO_URL } from "../../../helpers/dbUtils";
 
 const handler: NextApiHandler = async (req, res) => {
   const eventId = req.query.eventId;
 
-  const client = await MongoClient.connect(
-    `mongodb+srv://arielgamer:9VEY5dBL7BZE2mPa@cluster0.5bpz9.mongodb.net/?retryWrites=true&w=majority`
-  );
+  const client = await MongoClient.connect(MONGO_URL);
 
   if (req.method === "POST") {
     // add server-side validation

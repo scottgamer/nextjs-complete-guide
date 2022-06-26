@@ -1,5 +1,6 @@
 import { NextApiHandler } from "next";
 import { MongoClient } from "mongodb";
+import { MONGO_URL } from "../../../helpers/dbUtils";
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === "POST") {
@@ -10,9 +11,7 @@ const handler: NextApiHandler = async (req, res) => {
       return;
     }
 
-    const client = await MongoClient.connect(
-      `mongodb+srv://arielgamer:9VEY5dBL7BZE2mPa@cluster0.5bpz9.mongodb.net/?retryWrites=true&w=majority`
-    );
+    const client = await MongoClient.connect(MONGO_URL);
 
     const db = client.db("events");
     await db.collection("newsletter").insertOne({ email: userEmail });
