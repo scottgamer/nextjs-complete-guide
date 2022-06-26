@@ -1,7 +1,12 @@
 import { NextApiHandler } from "next";
+import { MongoClient } from "mongodb";
 
 const handler: NextApiHandler = async (req, res) => {
   const eventId = req.query.eventId;
+
+  const client = await MongoClient.connect(
+    `mongodb+srv://arielgamer:9VEY5dBL7BZE2mPa@cluster0.5bpz9.mongodb.net/?retryWrites=true&w=majority`
+  );
 
   if (req.method === "POST") {
     // add server-side validation
@@ -19,25 +24,30 @@ const handler: NextApiHandler = async (req, res) => {
     }
 
     const newComment = {
-      id: new Date().toISOString(),
       email,
       name,
       text,
+      eventId,
     };
 
-    console.log(newComment);
+    const db = client.db("events");
+    await db.collection("comments").insertOne(newComment);
+
     res.status(201).json({ message: "Comment added", comment: newComment });
   }
 
   if (req.method === "GET") {
-    const dummyList = [
-      { id: "1", name: "Richard", email: "email", text: "text" },
-      { id: "2", name: "Ariel", email: "email", text: "text" },
-      { id: "3", name: "name", email: "email", text: "text" },
-    ];
+    const db = client.db("events");
+    const comments = await db
+      .collection("comments")
+      .find()
+      .sort({ _id: -1 })
+      .toArray();
 
-    res.status(200).json({ comments: dummyList });
+    res.status(200).json({ comments });
   }
+
+  client.close();
 };
 
 export default handler;

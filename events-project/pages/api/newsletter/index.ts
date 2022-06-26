@@ -1,6 +1,7 @@
 import { NextApiHandler } from "next";
+import { MongoClient } from "mongodb";
 
-const handler: NextApiHandler = (req, res) => {
+const handler: NextApiHandler = async (req, res) => {
   if (req.method === "POST") {
     const userEmail = req.body.email;
 
@@ -8,6 +9,15 @@ const handler: NextApiHandler = (req, res) => {
       res.status(422).json({ message: "Invalid email address" });
       return;
     }
+
+    const client = await MongoClient.connect(
+      `mongodb+srv://arielgamer:9VEY5dBL7BZE2mPa@cluster0.5bpz9.mongodb.net/?retryWrites=true&w=majority`
+    );
+
+    const db = client.db("events");
+    await db.collection("newsletter").insertOne({ email: userEmail });
+
+    client.close();
 
     console.log(userEmail);
     res.status(201).json({ message: "Signed up" });
