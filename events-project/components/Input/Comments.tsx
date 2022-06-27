@@ -4,13 +4,12 @@ import CommentList from "./CommentList";
 import NewComment from "./NewComment";
 import classes from "./Comments.module.css";
 import { NextPage } from "next";
-
+import { Document } from "mongodb";
 interface CommentsProps {
   eventId: string;
 }
 
-export interface Comment {
-  id: string;
+export interface Comment extends Document {
   email: string;
   name: string;
   text: string;
