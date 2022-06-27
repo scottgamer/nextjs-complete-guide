@@ -1,6 +1,16 @@
 import { NextApiHandler } from "next";
-import { MongoClient } from "mongodb";
+import { MongoClient, Document } from "mongodb";
 import { MONGO_URL } from "../../../helpers/dbUtils";
+
+const connectDB = async () => {
+  const client = await MongoClient.connect(MONGO_URL);
+  return client;
+};
+
+const insertDocument = async (client: MongoClient, document: Document) => {
+  const db = client.db("events");
+  await db.collection("newsletter").insertOne(document);
+};
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === "POST") {
@@ -11,14 +21,21 @@ const handler: NextApiHandler = async (req, res) => {
       return;
     }
 
-    const client = await MongoClient.connect(MONGO_URL);
+    let client;
+    try {
+      client = await connectDB();
+    } catch (error) {
+      res.status(500).json({ message: "Connecting to DB failed" });
+      return;
+    }
 
-    const db = client.db("events");
-    await db.collection("newsletter").insertOne({ email: userEmail });
+    try {
+      await insertDocument(client, { email: userEmail });
+      client.close();
+    } catch (error) {
+      res.status(500).json({ message: "Inserting data failed" });
+    }
 
-    client.close();
-
-    console.log(userEmail);
     res.status(201).json({ message: "Signed up" });
   }
 };
