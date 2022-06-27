@@ -1,17 +1,10 @@
 import { NextPage } from "next";
 import React, { useRef, useState } from "react";
+import { Comment } from "./Comments";
 import classes from "./NewComment.module.css";
 
 interface NewCommentProps {
-  onAddComment: ({
-    email,
-    name,
-    text,
-  }: {
-    email: string;
-    name: string;
-    text: string;
-  }) => void;
+  onAddComment: (comment: Comment) => void;
 }
 
 // FIX: add props
