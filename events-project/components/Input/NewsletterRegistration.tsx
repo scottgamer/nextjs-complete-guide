@@ -1,31 +1,57 @@
 import { NextPage } from "next";
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
+import NotificationContext from "../../store/notificationContext";
 import classes from "./NewsletterRegistration.module.css";
 
 //FIX: event handler typing
 const NewsletterRegistration: NextPage = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const { showNotification } = useContext(NotificationContext);
 
   const registrationHandler = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
 
-    // fetch user input (state or refs)
-    // optional: validate input
-    // send valid data to API
+      // fetch user input (state or refs)
+      // optional: validate input
+      // send valid data to API
 
-    const enteredEmail = emailInputRef.current?.value;
+      const enteredEmail = emailInputRef.current?.value;
 
-    const response = await fetch("/api/newsletter", {
-      method: "POST",
-      body: JSON.stringify({ email: enteredEmail }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    const data = await response.json();
-    console.log(data);
+      showNotification({
+        title: "Signing up",
+        message: "Registering for newsletter",
+        status: "pending",
+      });
+
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        body: JSON.stringify({ email: enteredEmail }),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        showNotification({
+          title: "Success",
+          message: "Successfully registered for newsletter",
+          status: "success",
+        });
+        return await response.json();
+      }
+
+      const data = await response.json();
+      throw new Error(data.message) || "Something went wrong";
+    } catch (error) {
+      showNotification({
+        title: "Error",
+        message: (error as Error).message ?? "Error registering to newsletter",
+        status: "error",
+      });
+    }
   };
 
   return (
