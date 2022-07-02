@@ -1,4 +1,4 @@
-import { createContext, FC, useState } from "react";
+import { createContext, FC, useEffect, useState } from "react";
 
 export interface Notification {
   title: string;
@@ -21,6 +21,22 @@ const NotificationContext = createContext<NotificationContextValue>({
 export const NotificationProvider: FC = ({ children }) => {
   const [activeNotification, setActiveNotification] =
     useState<Notification | null>(null);
+
+  useEffect(() => {
+    if (
+      activeNotification &&
+      (activeNotification.status === "success" ||
+        activeNotification.status === "error")
+    ) {
+      const timer = setTimeout(() => {
+        hideNotification();
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [activeNotification]);
 
   const showNotification = (notification: Notification) => {
     setActiveNotification(notification);
