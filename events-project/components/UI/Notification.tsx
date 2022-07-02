@@ -10,7 +10,7 @@ interface NotificationProps {
 }
 
 const Notification: FC<NotificationProps> = (props) => {
-  const notificationCtx = useContext(NotificationContext);
+  const { hideNotification } = useContext(NotificationContext);
 
   const { title, message, status } = props;
 
@@ -31,7 +31,7 @@ const Notification: FC<NotificationProps> = (props) => {
   const activeClasses = `${styles.notification} ${statusClasses}`;
 
   return (
-    <div className={activeClasses} onClick={notificationCtx.hideNotification}>
+    <div className={activeClasses} onClick={hideNotification}>
       <h2>{title}</h2>
       <p>{message}</p>
     </div>
